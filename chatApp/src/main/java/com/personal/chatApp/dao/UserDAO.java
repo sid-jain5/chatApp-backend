@@ -1,5 +1,11 @@
 package com.personal.chatApp.dao;
 
-public interface UserDAO {
+import com.personal.chatApp.model.User;
 
+public interface UserDAO {
+	
+	public User getUserByUsername(String username) throws Exception;
+	
+	public String addUser(User user) throws Exception; 
+	
 }
