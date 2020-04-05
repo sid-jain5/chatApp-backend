@@ -46,23 +46,31 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	public String addUser(User user) throws Exception{
-		User userFromDB = userDAO.getUserByUsername(user.getUsername());
 		
+		User userFromDB = userDAO.getUserByUsername(user.getUsername());
+//		if(userFromDB==null) {
+//			System.out.println("USER NULL FOUND");
+//		}
 		if(userFromDB!=null) {
 			throw new Exception("UserService.USER_EXISTS");
 		}
-		
 		String hashedPassword = HashingUtility.getHashValue(user.getPassword());
 		user.setHashedPassword(hashedPassword);
+		
 		String usernameFromDAO = userDAO.addUser(user);
 		
-		if(usernameFromDAO.equals(user.getUsername())) {
+		if(!usernameFromDAO.equals(user.getUsername())) {
 			throw new Exception("UserService.ERROR");
 		}
 		return "UserService.SUCCESS_MESSAGE"+usernameFromDAO;
 	}
 	
 	public List<String> listUsers() throws Exception {
-		return null;
+		
+		List<String> listOfUsers = userDAO.getUsernameList();
+		if(listOfUsers==null || listOfUsers.isEmpty()) {
+			throw new Exception("UserService.NO_USERNAME_FOUND");
+		}
+		return listOfUsers;
 	}
 }

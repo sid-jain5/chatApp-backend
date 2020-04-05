@@ -1,5 +1,7 @@
 package com.personal.chatApp.api;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,26 @@ public class UserAPI {
 			return new ResponseEntity<User>(userFromDB, HttpStatus.OK);
 		}catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, environment.getProperty(e.getMessage()));
+		}
+	}
+	
+	@RequestMapping(value="/userRegister", method=RequestMethod.POST)
+	public ResponseEntity<String> addUser(@RequestBody User user){
+		try {
+			String status = userService.addUser(user);
+			return new ResponseEntity<String>(status,HttpStatus.ACCEPTED);
+		}catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, environment.getProperty(e.getMessage()));
+		}
+	}
+	
+	@RequestMapping(value="/getUsername", method=RequestMethod.GET)
+	public ResponseEntity<List<String>> getUsernames(){
+		try {
+			List<String> usernameList = userService.listUsers();
+			return new ResponseEntity<List<String>>(usernameList, HttpStatus.ACCEPTED);
+		}catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, environment.getProperty(e.getMessage()));
 		}
 	}
 }

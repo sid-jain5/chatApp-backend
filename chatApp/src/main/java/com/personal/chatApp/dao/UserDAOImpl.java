@@ -1,5 +1,7 @@
 package com.personal.chatApp.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -22,10 +24,14 @@ public class UserDAOImpl implements UserDAO {
 		q.setParameter("username", username);
 		
 		User u = null;
-		if(q.getResultList()==null) {
+		//System.out.println("here dao: " + q.getResultList());
+		if(q.getResultList()==null || q.getResultList().isEmpty()) {
+			System.out.println("user not found dao");
 			return u;
 		}
+		
 		UserEntity ue = (UserEntity) q.getResultList().get(0);
+		//System.out.println("checking entity: " + ue.getUsername());
 		u = new User();
 		u.setUsername(ue.getUsername());
 		u.setEmailId(ue.getEmailId());
@@ -40,6 +46,7 @@ public class UserDAOImpl implements UserDAO {
 	
 	@Override
 	public String addUser(User user) throws Exception{
+		
 		UserEntity newUser = new UserEntity();
 		
 		newUser.setEmailId(user.getEmailId());
@@ -54,5 +61,13 @@ public class UserDAOImpl implements UserDAO {
 		entityManager.persist(newUser);
 		
 		return newUser.getUsername();
+	}
+	
+	@Override
+	public List<String> getUsernameList() throws Exception{
+		
+		Query q = entityManager.createQuery("SELECT u.username from UserEntity u");
+		List<String> usernameList = q.getResultList();
+		return usernameList;
 	}
 }
